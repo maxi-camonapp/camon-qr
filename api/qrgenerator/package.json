@@ -1,0 +1,11 @@
+{
+  "name": "unipol-items",
+  "version": "1.0.0",
+  "main": "src/handler.js",
+  "type": "module",
+  "dependencies": {
+    "@fastify/cors": "^8.5.0",
+    "fastify": "^4.25.2",
+    "serverless-http": "^3.2.0"
+  }
+}

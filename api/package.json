@@ -1,0 +1,14 @@
+{
+  "name": "unipol-checkout",
+  "version": "1.0.0",
+  "main": "src/handler.js",
+  "type": "module",
+  "devDependencies": {
+    "serverless-offline": "^13.3.2"
+  },
+  "dependencies": {
+    "fastify": "^4.25.2",
+    "serverless-dynamodb": "^0.2.47",
+    "serverless-http": "^3.2.0"
+  }
+}

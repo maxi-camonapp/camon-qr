@@ -1,0 +1,77 @@
+service: camon-qr
+
+frameworkVersion: "3"
+
+custom:
+  tableName: 'camon-qr-${sls:stage}'
+  serverless-dynamodb:
+    stages:
+      - dev
+    start:
+      migrate: true
+    docker: true
+  serverless-offline:
+    resourceRoutes: true
+
+package:
+  individually: true
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  
+plugins:
+  - serverless-dynamodb
+  - serverless-offline
+
+functions:
+  qrgenerator:
+    description: QR generator api
+    name: QRGenerator-${opt:stage, 'dev'}
+    handler: qrgenerator/src/handler.main
+    url: true
+    package:
+      patterns:
+        - '!**/*'
+        - qrgenerator/**
+    timeout: 30
+    events:
+      - http:
+          path: /qrs
+          method: POST
+          cors: true
+      - http:
+          path: /qrs/{qrId}
+          method: DELETE
+          cors: true
+      - http:
+          path: qrs/{qrId}
+          method: PUT
+          cors: true
+      - http:
+          path: qrs/
+          method: GET
+          cors: true
+      - http:
+          path: qrs/{qrId}
+          method: GET
+          cors: true
+      
+    environment:
+      USERS_TABLE: ${self:custom.tableName}
+
+resources: 
+  Resources:
+    UsersTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: projectId
+            AttributeType: S
+
+        KeySchema:
+          - AttributeName: projectId
+            KeyType: HASH
+          
+        BillingMode: PAY_PER_REQUEST
+        TableName: ${self:custom.tableName}
